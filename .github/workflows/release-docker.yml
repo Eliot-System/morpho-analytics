@@ -9,11 +9,16 @@ on:
 jobs:
   build-push:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_USER: ${{ toLower(secrets.DOCKERHUB_USERNAME) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Prepare lowercase Docker username
+        id: prep
+        run: |
+          echo "DOCKER_USER=$(echo \"${DOCKERHUB_USERNAME}\" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
 
       - name: Show ref info
         run: |
